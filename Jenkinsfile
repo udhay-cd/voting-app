@@ -1,52 +1,44 @@
 pipeline {
-  agent {
-    node {
-      label 'ubuntu-1604-aufs-stable'
+    environment {
+    registry = "udhayashankard/nodeapp"
+    registryCredential = 'docker-hub'
+    dockerImage = ''
     }
-  }
+    agent any
   stages {
     stage('Build result') {
       steps {
-        sh 'docker build -t dockersamples/result ./result'
+        sh 'docker build -t udhayashankard/result ./result'
       }
     } 
     stage('Build vote') {
       steps {
-        sh 'docker build -t dockersamples/vote ./vote'
+        sh 'docker build -t udhayashankard/vote ./vote'
       }
     }
     stage('Build worker') {
       steps {
-        sh 'docker build -t dockersamples/worker ./worker'
+        sh 'docker build -t udhayashankard/worker ./worker'
       }
     }
     stage('Push result image') {
-      when {
-        branch 'master'
-      }
       steps {
-        withDockerRegistry(credentialsId: 'dockerbuildbot-index.docker.io', url:'') {
-          sh 'docker push dockersamples/result'
+        withDockerRegistry(credentialsId: 'docker-hub', url:'') {
+          sh 'docker push udhayashankard/result'
         }
       }
     }
     stage('Push vote image') {
-      when {
-        branch 'master'
-      }
       steps {
-        withDockerRegistry(credentialsId: 'dockerbuildbot-index.docker.io', url:'') {
-          sh 'docker push dockersamples/vote'
+        withDockerRegistry(credentialsId: 'docker-hub', url:'') {
+          sh 'docker push udhayashankard/vote'
         }
       }
     }
     stage('Push worker image') {
-      when {
-        branch 'master'
-      }
       steps {
-        withDockerRegistry(credentialsId: 'dockerbuildbot-index.docker.io', url:'') {
-          sh 'docker push dockersamples/worker'
+        withDockerRegistry(credentialsId: 'docker-hub', url:'') {
+          sh 'docker push udhayashankard/worker'
         }
       }
     }
